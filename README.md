@@ -4,8 +4,8 @@
 
 ## Preview
 
-![Preview](https://i.imgur.com/jF11Pvn.png)
-![Preview](https://i.imgur.com/dcDD6Bo.jpeg)
+![Preview](https://i.imgur.com/PPD759V.png)
+![Preview](https://i.imgur.com/ccxEiMu.png)
 
 ## Installation
 
