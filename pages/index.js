@@ -1,115 +1,156 @@
 import Image from "next/image";
-import localFont from "next/font/local";
-
-const geistSans = localFont({
-  src: "./fonts/GeistVF.woff",
-  variable: "--font-geist-sans",
-  weight: "100 900",
-});
-const geistMono = localFont({
-  src: "./fonts/GeistMonoVF.woff",
-  variable: "--font-geist-mono",
-  weight: "100 900",
-});
+import { useState } from "react";
+import { Send, Image as ImageIcon } from "lucide-react";
+import { GifSelector } from "./components/GifSelector";
 
 export default function Home() {
-  return (
-    <div
-      className={`${geistSans.variable} ${geistMono.variable} grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]`}
-    >
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              pages/index.js
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+  const [messages, setMessages] = useState([
+    { id: 1, text: "Hey there! 👋", sent: false, timestamp: "10:01 AM" },
+    { id: 2, text: "Hi! How are you?", sent: true, timestamp: "10:02 AM" },
+    {
+      id: 3,
+      text: "I'm doing great, thanks!",
+      sent: false,
+      timestamp: "10:03 AM",
+    },
+  ]);
+  const [newMessage, setNewMessage] = useState("");
+  const [isGifSelectorOpen, setIsGifSelectorOpen] = useState(false);
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+  const handleSend = () => {
+    if (newMessage.trim()) {
+      setMessages([
+        ...messages,
+        {
+          id: messages.length + 1,
+          text: newMessage,
+          sent: true,
+          timestamp: new Date().toLocaleTimeString([], {
+            hour: "2-digit",
+            minute: "2-digit",
+          }),
+        },
+      ]);
+      setNewMessage("");
+    }
+  };
+
+  const handleSelectGif = (content) => {
+    setMessages([
+      ...messages,
+      {
+        id: messages.length + 1,
+        text: `[${content.isVideo ? "Video" : "GIF"}: ${content.title}]`,
+        sent: true,
+        timestamp: new Date().toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit",
+        }),
+        isVideo: !!content.isVideo,
+        isGif: !content.isVideo,
+        preview: content.preview,
+        gifPreview: content.preview,
+      },
+    ]);
+  };
+
+  const handleKeyPress = (e) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      handleSend();
+    }
+  };
+
+  return (
+    <div className="grid grid-rows-[20px_1fr_20px] min-h-screen">
+      <div className="row-start-2 flex flex-col h-[calc(100vh-40px)] max-w-2xl w-full mx-auto bg-gray-100 rounded-lg overflow-hidden">
+        <div className="bg-gray-200 p-4 shadow">
+          <h1 className="text-lg font-semibold">Chat</h1>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+        <div className="flex-1 overflow-y-auto p-4 space-y-4">
+          {messages.map((message) => (
+            <div
+              key={message.id}
+              className={`flex ${
+                message.sent ? "justify-end" : "justify-start"
+              }`}
+            >
+              <div
+                className={`max-w-[70%] rounded-2xl px-4 py-2 ${
+                  message.sent
+                    ? "bg-blue-500 text-white rounded-br-sm"
+                    : "bg-gray-300 text-black rounded-bl-sm"
+                }`}
+              >
+                {message.isVideo ? (
+                  <video
+                    src={message.preview}
+                    autoPlay
+                    loop
+                    muted
+                    playsInline
+                    controls
+                    className="w-full h-48 object-cover rounded-lg"
+                  />
+                ) : message.isGif ? (
+                  <div className="relative w-full h-48 rounded-lg overflow-hidden">
+                    <Image
+                      src={message.gifPreview || message.preview}
+                      alt={message.text}
+                      fill
+                      className="object-cover"
+                      unoptimized
+                    />
+                  </div>
+                ) : (
+                  <p>{message.text}</p>
+                )}
+                <p
+                  className={`text-xs mt-1 ${
+                    message.sent ? "text-blue-100" : "text-gray-600"
+                  }`}
+                >
+                  {message.timestamp}
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div className="border-t border-gray-300 p-4 bg-white">
+          <div className="flex items-center space-x-2">
+            <button
+              className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+              onClick={() => setIsGifSelectorOpen(true)}
+            >
+              <ImageIcon size={24} className="text-gray-600" />
+            </button>
+            <div className="flex-1 relative">
+              <textarea
+                value={newMessage}
+                onChange={(e) => setNewMessage(e.target.value)}
+                onKeyPress={handleKeyPress}
+                placeholder="iMessage"
+                className="w-full rounded-2xl border border-gray-300 px-4 py-2 pr-12 resize-none focus:outline-none focus:border-blue-500"
+                rows={1}
+              />
+            </div>
+            <button
+              onClick={handleSend}
+              disabled={!newMessage.trim()}
+              className="p-2 rounded-full bg-blue-500 text-white disabled:opacity-50 disabled:cursor-not-allowed hover:bg-blue-600 transition-colors"
+            >
+              <Send size={20} />
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <GifSelector
+        isOpen={isGifSelectorOpen}
+        onClose={() => setIsGifSelectorOpen(false)}
+        onSelectGif={handleSelectGif}
+      />
     </div>
   );
 }
